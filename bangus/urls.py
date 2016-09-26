@@ -2,9 +2,12 @@ from django.conf.urls import include, url, patterns
 from rest_framework import routers
 
 from authentication.views import AccountViewSet, LoginView, LogoutView
+from workflow.views import ProjectViewSet, OrderViewSet
 
 router = routers.SimpleRouter()
 router.register(u'accounts', AccountViewSet)
+router.register(u'projects', ProjectViewSet)
+router.register(u'orders', OrderViewSet)
 
 urlpatterns = [
     url('^api/v1/', include(router.urls)),

@@ -20,14 +20,16 @@ class AccountManager(BaseUserManager):
         account = self.create_user(username, email, password, **kwargs)
         account.is_admin = True
         account.save()
+        return account
 
 
 @python_2_unicode_compatible
 class Account(AbstractBaseUser):
     # Naive role implementation based on bit operations
-    ROLE_USER = 0
-    ROLE_ADMIN = 1
-    ROLE_SUPERVISOR = 2
+    ROLE_USER = 0  # ordinary users for whom the system is designed
+    ROLE_SERVANT = 1  # servants that serve the user requests
+    ROLE_DIRECTOR = 2  # directors that confirm users' requests
+    ROLE_ADMIN = 4  # super-users that can do nearly everything
     ROLE_DEFAULT = ROLE_USER
 
     email = models.EmailField(unique=True)
@@ -54,3 +56,7 @@ class Account(AbstractBaseUser):
 
     def get_short_name(self):
         return self.email
+
+    @property
+    def is_super_powerful(self):
+        return self.role >= self.ROLE_ADMIN
