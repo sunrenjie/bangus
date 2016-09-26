@@ -1,0 +1,10 @@
+*.egg*
+*.pyc
+*.log
+*.db
+*.sqlite3
+*.patch
+/static/
+/node_modules/
+/bower_components/
+bangus/local_settings.py

@@ -1,0 +1,25 @@
+import logging
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = '9t8y949bot@v2t1f_491c%szz(+l9@cf4c+h52lf@g@bpi-umi'
+
+#LANGUAGE_CODE = 'zh-cn'
+TIME_ZONE = 'Asia/Shanghai'
+
+DEBUG = True
+
+# Database
+# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'bangus',
+        'USER': 'root',
+        'PASSWORD': 'r',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+    }
+}
+
+COMPRESS_ENABLED = False
