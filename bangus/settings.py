@@ -43,13 +43,13 @@ COMPRESS_PARSER = 'compressor.parser.HtmlParser'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
-    'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
     'compressor',
+    'authentication',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -83,6 +83,12 @@ TEMPLATES = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+    )
+}
+
 WSGI_APPLICATION = 'bangus.wsgi.application'
 
 # Internationalization
@@ -98,6 +104,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+AUTH_USER_MODEL = 'authentication.Account'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
