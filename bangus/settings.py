@@ -42,6 +42,7 @@ COMPRESS_PARSER = 'compressor.parser.HtmlParser'
 # Application definition
 
 INSTALLED_APPS = (
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -49,6 +50,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'rest_framework',
     'compressor',
+    'viewflow',
     'authentication',
     'workflow',
 )
@@ -128,3 +130,12 @@ STATICFILES_DIRS = staticfiles.collect_bower_static_libs(
 for p in ['bangus']:
     staticfiles.populate_config_with_static_files(CONFIG, [os.path.join(BASE_DIR, p, 'static')])
     STATICFILES_DIRS.append((p, os.path.join(BASE_DIR, p, 'static', p)))
+
+# Celery
+
+INSTALLED_APPS += ('kombu.transport.django', )
+BROKER_URL = 'django://'
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+

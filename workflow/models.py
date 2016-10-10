@@ -6,6 +6,8 @@ from django.db import models, IntegrityError
 
 from authentication.models import Account
 
+from viewflow.models import Process, Task
+
 
 def generate_uuid_hex():
     return uuid.uuid4().hex
@@ -48,6 +50,19 @@ class Order(models.Model):
                           default=generate_random_order_id_with_full_datetime_prefix)
     project = models.ForeignKey(Project)
     is_active = models.BooleanField(default=True)
+
+    vms_verified = models.BooleanField(default=False)
+    vms_confirmed = models.BooleanField(default=False)
+    vms_deployed = models.BooleanField(default=False)
+    vms_software_installed = models.BooleanField(default=False)
+
+    security_fixed = models.BooleanField(default=False)
+    security_confirmed = models.BooleanField(default=False)
+
+    external_ip = models.CharField(max_length=1024)  # separated by ';'
+    external_ip_confirmed = models.BooleanField(default=False)
+    external_ip_deployed = models.BooleanField(default=False)
+
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
@@ -63,6 +78,7 @@ class OrderVM(models.Model):
     sockets = models.IntegerField()
     cpus_per_socket = models.IntegerField()
     memory_GB = models.IntegerField()
+    disks = models.CharField(max_length=32)  # real numbers (of disk size; GB) separated by ';'
     nics = models.CharField(max_length=1024)  # separated by ';'
 
     class Meta:
@@ -71,3 +87,37 @@ class OrderVM(models.Model):
     def save(self, *args, **kargs):
         self.project = self.order.project
         return super(OrderVM, self).save(*args, **kargs)
+
+
+class OrderCompleteProjectProcess(Process):
+    order = models.ForeignKey(Order, blank=True, null=True)
+
+    def is_security_clear(self):
+        try:
+            if self.order.security_fixed and self.order.security_confirmed:
+                return True
+            else:
+                return False
+        except Order.DoesNotExist:
+            return False
+
+    class Meta:
+        verbose_name_plural = 'Order complete project process list'
+        permissions = [
+            ('can_start_order', 'Can initiate an order process'),
+            ('can_amend_order', 'Can amend an order'),
+            ('can_verify_order', 'Can verify that an order is technically possible'),
+            ('can_confirm_order', 'Can confirm an order'),
+            ('can_deploy_virtual_machines', 'Can deploy virtual machines'),
+            ('can_install_vm_software', 'Can install software for the VMs'),
+            ('can_fix_security_issues', 'Can fix security issues for the VMs'),
+            ('can_confirm_security_status', 'Can confirm that the VMs are secure according to security scan'),
+            ('can_request_external_ip', 'Can request external IP'),
+            ('can_confirm_external_ip', 'Can confirm external IP'),
+            ('can_deploy_external_ip', 'Can implemet external IP'),
+        ]
+
+
+class BangusTask(Task):
+    class Meta:
+        proxy = True
